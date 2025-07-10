@@ -1,0 +1,1004 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HTML File Generator</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.9/codemirror.min.css" integrity="sha512-mun0x0SOKM2yX0YdVFlmQfCjB7Ktab3g2o2Z0O8fE6p93bR+2PUpa7tL8qHpqao7+2cE1d0Qyl1qvt3f1i0mLMQ==" crossorigin="anonymous" referrerpolicy="no-referrer">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.9/theme/dracula.min.css" integrity="sha512-yeJ+rt68ChZ58MNVd6+wVow0wP9FiVsqZ2vY0C4+ZoU0M0J+CUY0N7/NJLEUSmR1N0i2CrZMPY0TtwjI2O4OG4g==" crossorigin="anonymous" referrerpolicy="no-referrer">
+    <style>
+        :root {
+            --bg-color: #121212;
+            --surface-color: #1e1e1e;
+            --primary-color: #3B82F6;
+            --primary-hover-color: #2563EB;
+            --secondary-color: #16A34A;
+            --secondary-hover-color: #15803D;
+            --text-color: #e0e0e0;
+            --text-muted-color: #a0a0a0;
+            --border-color: #333333;
+            --danger-color: #EF4444;
+            --danger-hover-color: #DC2626;
+            --border-radius: 12px;
+            --transition-speed: 0.3s;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            padding: 16px;
+            line-height: 1.6;
+            padding-bottom: 120px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: var(--surface-color);
+            border-radius: var(--border-radius);
+            padding: 24px;
+            border: 1px solid var(--border-color);
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 2rem;
+            margin-bottom: 24px;
+            font-weight: 700;
+            color: #ffffff;
+        }
+
+        .section {
+            margin-bottom: 20px;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            padding: 14px 16px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            margin-bottom: 8px;
+            transition: background-color var(--transition-speed);
+        }
+        .section-header:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .section-header h2 {
+            font-size: 1.25rem;
+            color: #ffffff;
+            font-weight: 600;
+        }
+
+        .section-header .chevron {
+            transition: transform var(--transition-speed) ease;
+        }
+
+        .section-content {
+            display: none;
+            padding: 8px;
+        }
+
+        .section-content.active {
+            display: block;
+        }
+        
+        .section-header.active .chevron {
+            transform: rotate(180deg);
+        }
+
+        .codemirror {
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius);
+            overflow: hidden;
+        }
+        
+        .controls {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 16px;
+        }
+
+        .inputs {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 12px;
+ Pollypotty Training Pants
+        }
+
+        .buttons {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(90px, 1fr));
+            gap: 12px;
+        }
+
+        input {
+            background: #2a2a2a;
+            color: var(--text-color);
+            border: 1px solid var(--border-color);
+            padding: 12px 16px;
+            width: 100%;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: all var(--transition-speed) ease;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3);
+        }
+        
+        .buttons button {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 12px 8px;
+            background: var(--primary-color);
+            color: #fff;
+            cursor: pointer;
+            font-weight: 500;
+            font-size: 0.75rem;
+            text-align: center;
+            height: 80px;
+            border: none;
+            border-radius: 10px;
+            transition: all var(--transition-speed) ease;
+        }
+
+        .buttons button:hover {
+            background: var(--primary-hover-color);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+        
+        .buttons button:active {
+            transform: translateY(0);
+        }
+
+        .buttons button:disabled {
+            background: #555;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .history {
+            max-height: 300px;
+            overflow-y: auto;
+            padding-right: 8px;
+        }
+        
+        .history li {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            padding: 12px 16px;
+            background: #2a2a2a;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            border: 1px solid var(--border-color);
+        }
+        
+        .history .actions button {
+            padding: 8px 12px;
+            font-size: 0.8rem;
+            background-color: #333;
+            border: none;
+            border-radius: 6px;
+            color: #fff;
+            cursor: pointer;
+            transition: background-color var(--transition-speed);
+        }
+        
+        .history .actions button:hover {
+            background-color: var(--primary-hover-color);
+        }
+        
+        .history button.delete {
+            background: var(--danger-color);
+        }
+        
+        .history button.delete:hover {
+            background: var(--danger-hover-color);
+        }
+
+        #previewFrame {
+            width: 100%;
+            height: 400px;
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius);
+            background: #fff;
+            margin-top: 16px;
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #333;
+            color: #fff;
+            padding: 14px 24px;
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity var(--transition-speed) ease, transform var(--transition-speed) ease;
+            z-index: 1002;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .toast .close-toast {
+            background: none;
+            border: none;
+            color: #fff;
+            font-size: 1rem;
+            cursor: pointer;
+        }
+
+        #floating-actions {
+            position: fixed;
+            bottom: 25px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 15px;
+            z-index: 1001;
+        }
+        
+        .fab {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+            border: 2px solid var(--surface-color);
+            transition: all var(--transition-speed) ease;
+        }
+        
+        .fab:hover {
+            transform: scale(1.1);
+        }
+        
+        .fab:disabled {
+            background: #555;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        #paste-fab {
+            background-color: var(--primary-color);
+        }
+        #paste-fab:hover {
+            background-color: var(--primary-hover-color);
+        }
+        
+        #download-fab {
+            background-color: var(--secondary-color);
+        }
+        #download-fab:hover {
+            background-color: var(--secondary-hover-color);
+        }
+
+        #copy-fab {
+            background-color: #8B5CF6;
+        }
+        #copy-fab:hover {
+            background-color: #7C3AED;
+        }
+
+        .toast.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .toast.error {
+            background: var(--danger-color);
+        }
+
+        .search-bar {
+            margin-bottom: 16px;
+            padding: 12px 16px;
+            width: 100%;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 1003;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: var(--surface-color);
+            padding: 20px;
+            border-radius: 10px;
+            max-width: 400px;
+            width: 90%;
+            text-align: center;
+            border: 1px solid var(--border-color);
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from { transform: translateY(-50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .modal-content p {
+            margin-bottom: 20px;
+            font-size: 1.1rem;
+        }
+
+        .modal-content button {
+            padding: 10px 20px;
+            margin: 0 10px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background-color var(--transition-speed);
+        }
+
+        .modal-content .confirm {
+            background: var(--danger-color);
+        }
+
+        .modal-content .confirm:hover {
+            background: var(--danger-hover-color);
+        }
+
+        .modal-content .cancel {
+            background: #555;
+        }
+
+        .modal-content .cancel:hover {
+            background: #777;
+        }
+
+        .help-section {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 16px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        .help-section ul {
+            list-style: disc;
+            margin-left: 20px;
+            font-size: 0.9rem;
+        }
+
+        .loading-spinner::after {
+            content: '';
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid #fff;
+            border-radius: 50%;
+            border-top-color: transparent;
+            animation: spin 1s linear infinite;
+            margin-left: 8px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        @media (min-width: 768px) {
+            .controls {
+                grid-template-columns: 1fr 1.5fr;
+                align-items: start;
+                gap: 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>HTML File Generator</h1>
+        
+        <div class="help-section">
+            <div class="section-header active" role="button" tabindex="0" aria-expanded="true">
+                <h2>Help & Instructions</h2>
+                <svg class="chevron" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+            </div>
+            <div class="section-content active">
+                <ul>
+                    <li>Use Chrome or Edge for full functionality (folder operations not supported in Firefox/Safari).</li>
+                    <li>Select a folder to save HTML files; you may need to re-select after reloading.</li>
+                    <li>Paste, edit, and save HTML code using the buttons below.</li>
+                    <li>Preview your code live or download saved files from the history.</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="section">
+            <div class="section-header active" role="button" tabindex="0" aria-expanded="true">
+                <h2>Code Editor</h2>
+                <svg class="chevron" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+            </div>
+            <div class="section-content active">
+                <div class="codemirror">
+                    <textarea id="htmlEditor"></textarea>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <div class="section-header active" role="button" tabindex="0" aria-expanded="true">
+                <h2>Controls</h2>
+                <svg class="chevron" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+            </div>
+            <div class="section-content active">
+                <div class="controls">
+                    <div class="inputs">
+                        <input type="text" id="filenameBase" placeholder="Base filename (e.g., index, app)" value="index" aria-label="Base filename for saved files">
+                        <input type="text" id="folderPath" readonly placeholder="No folder selected" aria-label="Selected folder path">
+                    </div>
+                    <div class="buttons">
+                        <button id="selectFolder" onclick="selectFolder()" aria-label="Select folder for saving files"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h16a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.93a2 2 0 0 1-1.66-.9l-.82-1.2A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13c0 1.1.9 2 2 2z"></path></svg>Select Folder</button>
+                        <button onclick="clearFolder()" aria-label="Clear selected folder"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path><line x1="9" y1="14" x2="15" y2="14"></line></svg>Clear Folder</button>
+                        <button onclick="clearEditor()" aria-label="Clear editor content"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>Clear Editor</button>
+                        <button onclick="previewHtml()" aria-label="Toggle HTML preview"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>Toggle Preview</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="section" id="previewSection">
+            <div class="section-header" role="button" tabindex="0" aria-expanded="false">
+                <h2>Preview</h2>
+                <svg class="chevron" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+            </div>
+            <div class="section-content"></div>
+        </div>
+
+        <div class="section">
+            <div class="section-header active" role="button" tabindex="0" aria-expanded="true">
+                <h2>Generated Files</h2>
+                <svg class="chevron" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+            </div>
+            <div class="section-content active">
+                <input type="text" class="search-bar" id="historySearch" placeholder="Search file history..." aria-label="Search generated files">
+                <div class="history">
+                    <ul id="fileHistory"></ul>
+                </div>
+            </div>
+        </div>
+
+        <div id="toast" class="toast" role="alert" aria-live="assertive">
+            <span id="toastMessage"></span>
+            <button class="close-toast" aria-label="Close notification">×</button>
+        </div>
+        <div id="deleteModal" class="modal">
+            <div class="modal-content" tabindex="-1">
+                <p id="deleteModalText"></p>
+                <button class="confirm" onclick="confirmDelete()" aria-label="Confirm delete">Delete</button>
+                <button class="cancel" onclick="closeModal()" aria-label="Cancel delete">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="floating-actions">
+        <button id="paste-fab" class="fab" onclick="pasteCode()" title="Paste Code from Clipboard" aria-label="Paste code from clipboard">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect></svg>
+        </button>
+        <button id="download-fab" class="fab" onclick="generateAndDownload()" title="Generate & Download" aria-label="Generate and save HTML file">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+        </button>
+        <button id="copy-fab" class="fab" onclick="copyCode()" title="Copy Code to Clipboard" aria-label="Copy code to clipboard">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+        </button>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.9/codemirror.min.js" integrity="sha512-ufx2CFDHF5wB3b+0c6FKB8jOHUn6deBrgzb1xAtSTCI3u44pw6M1Q1q4cLqcsxW4dBZarrgHZF4yUpFaS3hN4XQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.9/mode/htmlmixed/htmlmixed.min.js" integrity="sha512-yre+pXwe1x4g7N3jlm+MSYAvtsU4mDG+7r5gQ+0O/1mQ7gZYw+SVS7/UdUs3HSpJqO0W1Pcy2M1rK0Yb83sZPdw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script>
+        // Initialize CodeMirror editor
+        const editor = CodeMirror.fromTextArea(document.getElementById('htmlEditor'), {
+            lineNumbers: true,
+            mode: 'htmlmixed',
+            theme: 'dracula',
+            autoCloseTags: true,
+            matchBrackets: true,
+            lineWrapping: true,
+            indentWithTabs: false,
+            tabSize: 2
+        });
+        editor.setSize('100%', '400px');
+
+        let directoryHandle = null;
+        let fileHistory = [];
+        let isPreviewActive = false;
+        let deleteCallback = null;
+
+        // Load file history with error handling
+        try {
+            fileHistory = JSON.parse(localStorage.getItem('fileHistory')) || [];
+        } catch (err) {
+            console.error('Failed to load file history:', err);
+            fileHistory = [];
+            localStorage.setItem('fileHistory', JSON.stringify(fileHistory));
+        }
+
+        // Load saved state
+        editor.setValue(localStorage.getItem('editorContent') || '');
+        document.getElementById('folderPath').value = localStorage.getItem('folderPath') || '';
+        document.getElementById('filenameBase').value = localStorage.getItem('filenameBase') || 'index';
+        updateFileHistory();
+
+        // Check browser compatibility
+        const isSecureContext = window.isSecureContext;
+        const isDirectoryPickerSupported = 'showDirectoryPicker' in window;
+        const isClipboardSupported = 'clipboard' in navigator;
+
+        if (!isSecureContext) {
+            showToast('This app requires HTTPS. GitHub Pages should work, but ensure you’re using https://.', true, true);
+        }
+        if (!isDirectoryPickerSupported) {
+            showToast('Folder operations are only supported in Chrome and Edge.', true, true);
+            document.getElementById('selectFolder').disabled = true;
+            document.getElementById('download-fab').disabled = true;
+        }
+        if (!isClipboardSupported) {
+            showToast('Clipboard operations are not supported in this browser.', true, true);
+            document.getElementById('paste-fab').disabled = true;
+            document.getElementById('copy-fab').disabled = true;
+        }
+
+        // Toggle collapsible sections
+        document.querySelectorAll('.section-header').forEach(header => {
+            header.setAttribute('tabindex', '0');
+            header.setAttribute('role', 'button');
+            header.addEventListener('click', () => toggleSection(header));
+            header.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    toggleSection(header);
+                }
+            });
+            const isActive = header.classList.contains('active');
+            header.setAttribute('aria-expanded', isActive.toString());
+            const content = header.nextElementSibling;
+            if (!isActive) {
+                content.classList.remove('active');
+                header.querySelector('.chevron').style.transform = 'rotate(0deg)';
+            } else {
+                header.querySelector('.chevron').style.transform = 'rotate(180deg)';
+            }
+        });
+
+        function toggleSection(header) {
+            const content = header.nextElementSibling;
+            const chevron = header.querySelector('.chevron');
+            const isActive = header.classList.toggle('active');
+            header.setAttribute('aria-expanded', isActive.toString());
+            if (isActive) {
+                content.classList.add('active');
+                chevron.style.transform = 'rotate(180deg)';
+            } else {
+                content.classList.remove('active');
+                chevron.style.transform = 'rotate(0deg)';
+            }
+        }
+
+        function showToast(message, isError = false, persistent = false) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toastMessage').textContent = message;
+            toast.className = `toast show ${isError ? 'error' : ''}`;
+            if (!persistent) {
+                setTimeout(() => toast.classList.remove('show'), isError ? 7000 : 4000);
+            }
+            toast.querySelector('.close-toast').onclick = () => toast.classList.remove('show');
+        }
+
+        function setLoading(isLoading) {
+            const buttons = document.querySelectorAll('button:not(.close-toast), .fab');
+            buttons.forEach(btn => {
+                btn.disabled = isLoading;
+                btn.classList.toggle('loading-spinner', isLoading);
+            });
+            document.body.style.cursor = isLoading ? 'progress' : 'default';
+        }
+
+        async function pasteCode() {
+            if (!isClipboardSupported) {
+                showToast('Clipboard access is not supported.', true);
+                return;
+            }
+            setLoading(true);
+            try {
+                const text = await navigator.clipboard.readText();
+                if (text) {
+                    editor.setValue(text);
+                    localStorage.setItem('editorContent', text);
+                    showToast('Code pasted successfully!');
+                } else {
+                    showToast('Clipboard is empty.', true);
+                }
+            } catch (err) {
+                console.error('Paste Error:', err);
+                showToast('Failed to read from clipboard.', true);
+            } finally {
+                setLoading(false);
+            }
+        }
+
+        async function copyCode() {
+            if (!isClipboardSupported) {
+                showToast('Clipboard access is not supported.', true);
+                return;
+            }
+            setLoading(true);
+            try {
+                const text = editor.getValue().trim();
+                if (!text) {
+                    showToast('Editor is empty. Nothing to copy.', true);
+                } else {
+                    await navigator.clipboard.writeText(text);
+                    showToast('Code copied to clipboard!');
+                }
+            } catch (err) {
+                console.error('Copy Error:', err);
+                showToast('Failed to copy to clipboard.', true);
+            } finally {
+                setLoading(false);
+            }
+        }
+
+        async function selectFolder() {
+            if (!isDirectoryPickerSupported) {
+                showToast('Folder selection is not supported.', true);
+                return;
+            }
+            setLoading(true);
+            try {
+                directoryHandle = await window.showDirectoryPicker();
+                const permissions = await directoryHandle.queryPermission({ mode: 'readwrite' });
+                if (permissions !== 'granted') {
+                    showToast('Permission denied for folder access.', true);
+                    directoryHandle = null;
+                    return;
+                }
+                const path = directoryHandle.name;
+                document.getElementById('folderPath').value = path;
+                localStorage.setItem('folderPath', path);
+                showToast(`Folder "${path}" selected!`);
+            } catch (err) {
+                if (err.name !== 'AbortError') {
+                    console.error('Select Folder Error:', err);
+                    showToast('Failed to select folder.', true);
+                }
+            } finally {
+                setLoading(false);
+            }
+        }
+
+        function clearFolder() {
+            directoryHandle = null;
+            document.getElementById('folderPath').value = '';
+            localStorage.removeItem('folderPath');
+            showToast('Folder selection cleared.');
+        }
+
+        async function getUniqueFileName() {
+            if (!directoryHandle) return null;
+            const baseName = document.getElementById('filenameBase').value.trim() || 'index';
+            let fileName = `${baseName}.html`;
+            let counter = 1;
+            try {
+                const existingFiles = [];
+                for await (const entry of directoryHandle.values()) {
+                    if (entry.kind === 'file') existingFiles.push(entry.name);
+                    if (existingFiles.length > 1000) break; // Limit to prevent performance issues
+                }
+                while (existingFiles.includes(fileName)) {
+                    fileName = `${baseName}-${counter++}.html`;
+                }
+                return fileName;
+            } catch (err) {
+                console.error('Error checking filenames:', err);
+                showToast('Failed to generate unique filename.', true);
+                return null;
+            }
+        }
+
+        async function generateAndDownload() {
+            const htmlContent = editor.getValue().trim();
+            if (!htmlContent) {
+                showToast('Editor is empty. Nothing to save.', true);
+                return;
+            }
+            if (!directoryHandle) {
+                showToast('Please select a destination folder first.', true);
+                return;
+            }
+            setLoading(true);
+            try {
+                const permissions = await directoryHandle.queryPermission({ mode: 'readwrite' });
+                if (permissions !== 'granted') {
+                    showToast('Permission denied for folder access. Please re-select the folder.', true);
+                    directoryHandle = null;
+                    localStorage.removeItem('folderPath');
+                    document.getElementById('folderPath').value = '';
+                    return;
+                }
+                const fileName = await getUniqueFileName();
+                if (!fileName) {
+                    showToast('Failed to generate a unique filename.', true);
+                    return;
+                }
+                const fileHandle = await directoryHandle.getFileHandle(fileName, { create: true });
+                const writable = await fileHandle.createWritable();
+                await writable.write(htmlContent);
+                await writable.close();
+                fileHistory = fileHistory.filter(f => f.name !== fileName);
+                fileHistory.unshift({ name: fileName, timestamp: new Date().toISOString() });
+                if (fileHistory.length > 100) fileHistory.pop();
+                try {
+                    localStorage.setItem('fileHistory', JSON.stringify(fileHistory));
+                } catch (err) {
+                    console.error('localStorage Error:', err);
+                    fileHistory = fileHistory.slice(0, fileHistory.length - 10); // Remove 10 entries
+                    localStorage.setItem('fileHistory', JSON.stringify(fileHistory));
+                    showToast('File history trimmed due to storage limits.', true);
+                }
+                updateFileHistory();
+                showToast(`File "${fileName}" saved successfully!`);
+            } catch (err) {
+                console.error('Save Error:', err);
+                showToast('Failed to save file.', true);
+            } finally {
+                setLoading(false);
+            }
+        }
+
+        async function previewHtml() {
+            const previewSection = document.getElementById('previewSection');
+            const previewContent = previewSection.querySelector('.section-content');
+            let iframe = document.getElementById('previewFrame');
+
+            if (isPreviewActive) {
+                if (iframe) previewContent.removeChild(iframe);
+                isPreviewActive = false;
+                showToast('Preview hidden.');
+            } else {
+                const htmlContent = editor.getValue().trim();
+                if (!htmlContent) {
+                    showToast('Editor is empty. Nothing to preview.', true);
+                    return;
+                }
+                try {
+                    const blob = new Blob([htmlContent], { type: 'text/html' });
+                    const url = URL.createObjectURL(blob);
+                    if (!previewContent.classList.contains('active')) {
+                        previewSection.querySelector('.section-header').click();
+                    }
+                    if (iframe) previewContent.removeChild(iframe);
+                    iframe = document.createElement('iframe');
+                    iframe.id = 'previewFrame';
+                    iframe.src = url;
+                    previewContent.appendChild(iframe);
+                    isPreviewActive = true;
+                    showToast('Preview updated.');
+                    setTimeout(() => URL.revokeObjectURL(url), 60000);
+                } catch (err) {
+                    console.error('Preview Error:', err);
+                    showToast('Failed to render preview. Check your HTML.', true);
+                }
+            }
+        }
+
+        function clearEditor() {
+            editor.setValue('');
+            localStorage.removeItem('editorContent');
+            if (isPreviewActive) {
+                previewHtml();
+            }
+            showToast('Editor cleared.');
+        }
+
+        function updateFileHistory(filter = '') {
+            const ul = document.getElementById('fileHistory');
+            ul.innerHTML = '';
+            const filteredHistory = fileHistory
+                .filter(file => file.name.toLowerCase().includes(filter.toLowerCase().replace(/[.*+?^${}()|[\]\\]/g, '\\$&')));
+            if (filteredHistory.length === 0) {
+                ul.innerHTML = `<li style="justify-content: center; color: var(--text-muted-color); padding: 20px;">No files found.</li>`;
+                return;
+            }
+            filteredHistory.forEach((file) => {
+                const li = document.createElement('li');
+                li.innerHTML = `
+                    <div class="file-info">
+                        ${file.name}
+                        <span style="font-size: 0.8rem; color: var(--text-muted-color);">${new Date(file.timestamp).toLocaleString()}</span>
+                    </div>
+                    <div class="actions">
+                        <button onclick="previewFile(event, '${file.name}')" aria-label="Preview ${file.name}">Preview</button>
+                        <button onclick="downloadFile(event, '${file.name}')" aria-label="Download ${file.name}">Download</button>
+                        <button class="delete" onclick="showDeleteModal(event, '${file.name}')" aria-label="Delete ${file.name}">Delete</button>
+                    </div>
+                `;
+                ul.appendChild(li);
+            });
+        }
+
+        async function performFileAction(fileName, actionCallback, errorMsg) {
+            if (!directoryHandle) {
+                showToast('Please re-select the folder containing the file.', true);
+                return;
+            }
+            try {
+                const permissions = await directoryHandle.queryPermission({ mode: 'readwrite' });
+                if (permissions !== 'granted') {
+                    showToast('Permission denied for folder access. Please re-select the folder.', true);
+                    directoryHandle = null;
+                    localStorage.removeItem('folderPath');
+                    document.getElementById('folderPath').value = '';
+                    return;
+                }
+                const fileHandle = await directoryHandle.getFileHandle(fileName);
+                await actionCallback(fileHandle);
+            } catch (err) {
+                if (err.name === 'NotFoundError') {
+                    showToast(`File "${fileName}" not found in the selected folder.`, true);
+                } else {
+                    console.error(errorMsg, err);
+                    showToast(`Error: ${errorMsg}`, true);
+                }
+            }
+        }
+
+        async function previewFile(e, fileName) {
+            e.stopPropagation();
+            setLoading(true);
+            await performFileAction(fileName, async (fileHandle) => {
+                const file = await fileHandle.getFile();
+                const text = await file.text();
+                const previewSection = document.getElementById('previewSection');
+                const previewContent = previewSection.querySelector('.section-content');
+                if (!previewContent.classList.contains('active')) {
+                    previewSection.querySelector('.section-header').click();
+                }
+                let iframe = document.getElementById('previewFrame');
+                if (iframe) previewContent.removeChild(iframe);
+                const blob = new Blob([text], { type: 'text/html' });
+                const url = URL.createObjectURL(blob);
+                iframe = document.createElement('iframe');
+                iframe.id = 'previewFrame';
+                iframe.src = url;
+                previewContent.appendChild(iframe);
+                isPreviewActive = true;
+                showToast(`Previewing ${fileName}.`);
+                setTimeout(() => URL.revokeObjectURL(url), 60000);
+            }, 'Failed to preview file');
+            setLoading(false);
+        }
+
+        async function downloadFile(e, fileName) {
+            e.stopPropagation();
+            setLoading(true);
+            await performFileAction(fileName, async (fileHandle) => {
+                const file = await fileHandle.getFile();
+                const blob = new Blob([await file.text()], { type: 'text/html' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = fileName;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+                showToast(`Downloading ${fileName}.`);
+            }, 'Failed to download file');
+            setLoading(false);
+        }
+
+        function showDeleteModal(e, fileName) {
+            e.stopPropagation();
+            const modal = document.getElementById('deleteModal');
+            const modalContent = modal.querySelector('.modal-content');
+            document.getElementById('deleteModalText').textContent = `Are you sure you want to delete "${fileName}"? This action cannot be undone.`;
+            modal.style.display = 'flex';
+            modalContent.focus();
+            const focusableElements = modalContent.querySelectorAll('button');
+            const firstElement = focusableElements[0];
+            const lastElement = focusableElements[focusableElements.length - 1];
+            const focusHandler = (e) => {
+                if (e.key === 'Tab') {
+                    if (e.shiftKey && document.activeElement === firstElement) {
+                        e.preventDefault();
+                        lastElement.focus();
+                    } else if (!e.shiftKey && document.activeElement === lastElement) {
+                        e.preventDefault();
+                        firstElement.focus();
+                    }
+                }
+                if (e.key === 'Escape') closeModal();
+            };
+            modalContent.addEventListener('keydown', focusHandler);
+            deleteCallback = async () => {
+                setLoading(true);
+                await performFileAction(fileName, async () => {
+                    await directoryHandle.removeEntry(fileName);
+                    fileHistory = fileHistory.filter(f => f.name !== fileName);
+                    try {
+                        localStorage.setItem('fileHistory', JSON.stringify(fileHistory));
+                    } catch (err) {
+                        console.error('localStorage Error:', err);
+                        fileHistory = fileHistory.slice(0, fileHistory.length - 10);
+                        localStorage.setItem('fileHistory', JSON.stringify(fileHistory));
+                        showToast('File history trimmed due to storage limits.', true);
+                    }
+                    updateFileHistory(document.getElementById('historySearch').value);
+                    showToast(`File "${fileName}" deleted successfully!`);
+                }, 'Failed to delete file');
+                setLoading(false);
+                closeModal();
+            };
+            modalContent.focusHandler = focusHandler;
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('deleteModal');
+            const modalContent = modal.querySelector('.modal-content');
+            modal.style.display = 'none';
+            modalContent.removeEventListener('keydown', modalContent.focusHandler);
+            deleteCallback = null;
+            document.querySelector('.section-header').focus();
+        }
+
+        function confirmDelete() {
+            if (deleteCallback) deleteCallback();
+        }
+
+        let debounceTimer;
+        editor.on('change', () => {
+            clearTimeout(debounceTimer);
+            debounceTimer = setTimeout(() => {
+                try {
+                    localStorage.setItem('editorContent', editor.getValue());
+                } catch (err) {
+                    console.error('localStorage Error:', err);
+                    showToast('Editor content too large to save locally.', true);
+                }
+            }, 300);
+        });
+
+        document.getElementById('filenameBase').addEventListener('input', (e) => {
+            localStorage.setItem('filenameBase', e.target.value);
+        });
+
+        document.getElementById('historySearch').addEventListener('input', (e) => {
+            updateFileHistory(e.target.value);
+        });
+    </script>
+</body>
+</html>
