@@ -419,6 +419,41 @@
         .fab.download {
             background: linear-gradient(45deg, #2196F3, #1976D2);
             animation-delay: 0.6s;
+            position: relative;
+        }
+        
+        .fab.options {
+            background: linear-gradient(45deg, #9E9E9E, #757575);
+            animation-delay: 0.9s;
+        }
+        
+        .fab.settings {
+            background: linear-gradient(45deg, #673AB7, #512DA8);
+            animation-delay: 1.2s;
+        }
+
+        .fab-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: #ff4444;
+            color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            font-size: 12px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid white;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
         }
 
         /* Enhanced Download Options Panel */
@@ -553,6 +588,148 @@
             background: #c82333;
         }
 
+        /* Settings Panel */
+        .settings-panel {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0.8);
+            background: rgba(40, 40, 60, 0.95);
+            backdrop-filter: blur(20px);
+            border: 1px solid #673AB7;
+            border-radius: 15px;
+            padding: 25px;
+            max-width: 90vw;
+            max-height: 90vh;
+            width: 400px;
+            z-index: 10000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            overflow-y: auto;
+        }
+        .settings-panel.show {
+            opacity: 1;
+            visibility: visible;
+            transform: translate(-50%, -50%) scale(1);
+        }
+        .settings-panel h3 {
+            color: #673AB7;
+            margin: 0 0 20px 0;
+            font-size: 1.5rem;
+            text-align: center;
+            border-bottom: 1px solid #673AB7;
+            padding-bottom: 10px;
+        }
+        .settings-section {
+            margin-bottom: 20px;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            border: 1px solid rgba(103, 58, 183, 0.3);
+        }
+        .settings-section h4 {
+            color: #673AB7;
+            margin: 0 0 10px 0;
+            font-size: 1.1rem;
+        }
+        .settings-input {
+            width: 100%;
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(103, 58, 183, 0.5);
+            border-radius: 5px;
+            color: white;
+            font-size: 1rem;
+            margin: 5px 0;
+        }
+        .settings-input:focus {
+            outline: none;
+            border-color: #673AB7;
+            box-shadow: 0 0 10px rgba(103, 58, 183, 0.3);
+        }
+        .settings-select {
+            width: 100%;
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(103, 58, 183, 0.5);
+            border-radius: 5px;
+            color: white;
+            font-size: 1rem;
+            margin: 5px 0;
+        }
+        .settings-select option {
+            background: #2c2c2c;
+            color: white;
+        }
+        .settings-select:focus {
+            outline: none;
+            border-color: #673AB7;
+            box-shadow: 0 0 10px rgba(103, 58, 183, 0.3);
+        }
+        .settings-label {
+            color: #e0e0e0;
+            font-size: 0.9rem;
+            margin-bottom: 5px;
+            display: block;
+        }
+        .settings-description {
+            color: #999;
+            font-size: 0.8rem;
+            margin-top: 5px;
+            font-style: italic;
+        }
+        .settings-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        .settings-save {
+            flex: 1;
+            padding: 12px;
+            background: linear-gradient(45deg, #673AB7, #512DA8);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+        .settings-save:hover {
+            background: linear-gradient(45deg, #512DA8, #4527A0);
+            transform: translateY(-2px);
+        }
+        .settings-reset {
+            flex: 1;
+            padding: 12px;
+            background: linear-gradient(45deg, #FF5722, #E64A19);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+        .settings-reset:hover {
+            background: linear-gradient(45deg, #E64A19, #D84315);
+            transform: translateY(-2px);
+        }
+        .settings-close {
+            width: 100%;
+            padding: 12px;
+            background: #dc3545;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            margin-top: 10px;
+            transition: background-color 0.3s ease;
+        }
+        .settings-close:hover {
+            background: #c82333;
+        }
+
         /* Responsive design improvements */
         @media (min-width: 768px) {
             .container {
@@ -658,8 +835,15 @@
         <button class="fab paste" onclick="pasteCode()" title="Paste Code">
             <i class="fas fa-paste"></i>
         </button>
-        <button class="fab download" onclick="showDownloadOptions()" title="Download Options">
+        <button class="fab download" onclick="oneClickDownload()" title="One-Click Download" oncontextmenu="showDownloadOptions(); return false;">
             <i class="fas fa-download"></i>
+            <span class="fab-badge">1</span>
+        </button>
+        <button class="fab options" onclick="showDownloadOptions()" title="Download Options">
+            <i class="fas fa-cog"></i>
+        </button>
+        <button class="fab settings" onclick="showSettings()" title="File Settings">
+            <i class="fas fa-tools"></i>
         </button>
     </div>
 
@@ -694,6 +878,51 @@
         </div>
 
         <button class="close-download" onclick="hideDownloadOptions()">
+            <i class="fas fa-times"></i> Close
+        </button>
+    </div>
+
+    <!-- Settings Panel -->
+    <div id="settingsPanel" class="settings-panel">
+        <h3><i class="fas fa-tools"></i> File Settings</h3>
+        
+        <div class="settings-section">
+            <h4>Default File Name</h4>
+            <label class="settings-label">Base filename (without extension)</label>
+            <input type="text" id="defaultFilename" class="settings-input" placeholder="index" value="index">
+            <div class="settings-description">This will be the default name for your files (e.g., "app" becomes "app.html", "app1.html", etc.)</div>
+        </div>
+        
+        <div class="settings-section">
+            <h4>File Format</h4>
+            <label class="settings-label">Choose file extension</label>
+            <select id="fileFormat" class="settings-select">
+                <option value="html">HTML (.html)</option>
+                <option value="css">CSS (.css)</option>
+                <option value="js">JavaScript (.js)</option>
+                <option value="txt">Text (.txt)</option>
+                <option value="json">JSON (.json)</option>
+                <option value="xml">XML (.xml)</option>
+                <option value="php">PHP (.php)</option>
+                <option value="py">Python (.py)</option>
+                <option value="java">Java (.java)</option>
+                <option value="cpp">C++ (.cpp)</option>
+                <option value="c">C (.c)</option>
+                <option value="md">Markdown (.md)</option>
+            </select>
+            <div class="settings-description">Select the file format you want to download. The content will be saved with this extension.</div>
+        </div>
+        
+        <div class="settings-actions">
+            <button class="settings-save" onclick="saveSettings()">
+                <i class="fas fa-save"></i> Save Settings
+            </button>
+            <button class="settings-reset" onclick="resetSettings()">
+                <i class="fas fa-undo"></i> Reset to Default
+            </button>
+        </div>
+        
+        <button class="settings-close" onclick="hideSettings()">
             <i class="fas fa-times"></i> Close
         </button>
     </div>
@@ -982,23 +1211,27 @@
             try {
                 const content = editor ? editor.getValue() : document.getElementById('htmlEditor').value;
                 const filenameBase = document.getElementById('filenameBase').value || 'index';
-                const filename = `${filenameBase}.html`;
 
                 if (!content.trim()) {
                     showToast('Please enter some HTML content first!', true);
                     return;
                 }
 
-                // Add to history
-                addToHistory(filename, content);
+                let filename;
 
                 if (directoryHandle) {
                     // Save to selected folder using File System Access API
                     try {
+                        // Generate unique filename for the selected folder
+                        filename = await generateUniqueFilename(`${filenameBase}.html`, directoryHandle);
+                        
                         const fileHandle = await directoryHandle.getFileHandle(filename, { create: true });
                         const writable = await fileHandle.createWritable();
                         await writable.write(content);
                         await writable.close();
+                        
+                        // Add to history
+                        addToHistory(filename, content);
                         showToast(`File "${filename}" saved to selected folder!`);
                     } catch (error) {
                         console.error('Error saving to folder:', error);
@@ -1007,7 +1240,9 @@
                             showToast('Folder access expired. Please select folder again.', true);
                             clearFolder();
                         }
-                        // Fallback to download
+                        // Fallback to download with unique filename
+                        filename = await generateUniqueFilename(`${filenameBase}.html`);
+                        addToHistory(filename, content);
                         downloadFile(content, filename);
                     }
                 } else {
@@ -1016,7 +1251,9 @@
                     if (hadFolder) {
                         showToast('No folder selected. Files will be downloaded instead. Click "Select Folder" to save directly to a folder.', true);
                     }
-                    // Download file
+                    // Download file with unique filename
+                    filename = await generateUniqueFilename(`${filenameBase}.html`);
+                    addToHistory(filename, content);
                     downloadFile(content, filename);
                 }
             } catch (error) {
@@ -1645,6 +1882,112 @@
         // Enhanced download functions
         let downloadDirectoryHandle = null;
 
+        // Generate unique filename to avoid conflicts
+        async function generateUniqueFilename(baseFilename, directoryHandle = null) {
+            // Get current file format setting
+            const fileFormat = localStorage.getItem('fileFormat') || 'html';
+            
+            // Remove any existing extension and add the selected format
+            const baseName = baseFilename.replace(/\.[^/.]+$/, "");
+            let counter = 0;
+            let filename = `${baseName}.${fileFormat}`;
+
+            if (directoryHandle) {
+                // Check for existing files in the selected folder
+                try {
+                    while (true) {
+                        try {
+                            await directoryHandle.getFileHandle(filename);
+                            // File exists, try next number
+                            counter++;
+                            filename = counter === 1 ? `${baseName}1.${fileFormat}` : `${baseName}${counter}.${fileFormat}`;
+                        } catch (error) {
+                            // File doesn't exist, we can use this filename
+                            break;
+                        }
+                    }
+                } catch (error) {
+                    console.warn('Error checking for existing files:', error);
+                }
+            } else {
+                // For downloads folder, check against file history
+                const existingFiles = fileHistory.map(item => item.filename);
+                while (existingFiles.includes(filename)) {
+                    counter++;
+                    filename = counter === 1 ? `${baseName}1.${fileFormat}` : `${baseName}${counter}.${fileFormat}`;
+                }
+            }
+
+            return filename;
+        }
+
+        // One-click download function - automatically downloads to selected folder or Downloads
+        async function oneClickDownload() {
+            try {
+                const content = editor ? editor.getValue() : document.getElementById('htmlEditor').value;
+                const filenameBase = document.getElementById('filenameBase').value || 'index';
+
+                if (!content.trim()) {
+                    showToast('Please enter some HTML content first!', true);
+                    return;
+                }
+
+                let filename;
+
+                // Check if we have a selected folder and try to save there first
+                if (downloadDirectoryHandle) {
+                    try {
+                        // Generate unique filename for the selected folder
+                        filename = await generateUniqueFilename(`${filenameBase}`, downloadDirectoryHandle);
+                        
+                        // Try to save to the selected folder
+                        const fileHandle = await downloadDirectoryHandle.getFileHandle(filename, {
+                            create: true
+                        });
+                        const writable = await fileHandle.createWritable();
+                        await writable.write(content);
+                        await writable.close();
+
+                        // Add to history and show success message
+                        addToHistory(filename, content);
+                        showToast(`File "${filename}" saved to ${downloadDirectoryHandle.name} folder!`);
+                        return;
+                    } catch (folderError) {
+                        console.warn('Failed to save to selected folder, falling back to download:', folderError);
+                        // Reset the folder handle if permission was denied
+                        if (folderError.name === 'NotAllowedError') {
+                            downloadDirectoryHandle = null;
+                            updateFolderInfo();
+                            showToast('Folder permission lost. Downloading to Downloads folder instead.', true);
+                        }
+                    }
+                }
+
+                // Fallback: Download to Downloads folder with unique filename
+                filename = await generateUniqueFilename(`${filenameBase}`);
+                
+                const fileFormat = localStorage.getItem('fileFormat') || 'html';
+                const mimeType = getMimeType(fileFormat);
+                const blob = new Blob([content], { type: mimeType });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = filename;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+
+                // Add to history and show success message
+                addToHistory(filename, content);
+                showToast(`Downloaded "${filename}" to Downloads folder!`);
+
+            } catch (error) {
+                console.error('Error with one-click download:', error);
+                showToast('Error downloading file. Please try again.', true);
+            }
+        }
+
         // Show download options
         function showDownloadOptions() {
             try {
@@ -1667,19 +2010,23 @@
         }
 
         // Quick download to Downloads folder
-        function quickDownload() {
+        async function quickDownload() {
             try {
                 const content = editor ? editor.getValue() : document.getElementById('htmlEditor').value;
                 const filenameBase = document.getElementById('filenameBase').value || 'index';
-                const filename = `${filenameBase}.html`;
 
                 if (!content.trim()) {
                     showToast('Please enter some HTML content first!', true);
                     return;
                 }
 
-                // Create download link
-                const blob = new Blob([content], { type: 'text/html' });
+                // Generate unique filename
+                const filename = await generateUniqueFilename(`${filenameBase}`);
+
+                // Create download link with appropriate MIME type
+                const fileFormat = localStorage.getItem('fileFormat') || 'html';
+                const mimeType = getMimeType(fileFormat);
+                const blob = new Blob([content], { type: mimeType });
                 const url = URL.createObjectURL(blob);
                 const a = document.createElement('a');
                 a.href = url;
@@ -1751,12 +2098,14 @@
 
                 const content = editor ? editor.getValue() : document.getElementById('htmlEditor').value;
                 const filenameBase = document.getElementById('filenameBase').value || 'index';
-                const filename = `${filenameBase}.html`;
 
                 if (!content.trim()) {
                     showToast('Please enter some HTML content first!', true);
                     return;
                 }
+
+                // Generate unique filename for the selected folder
+                const filename = await generateUniqueFilename(`${filenameBase}`, downloadDirectoryHandle);
 
                 // Create file in selected directory
                 const fileHandle = await downloadDirectoryHandle.getFileHandle(filename, {
@@ -1788,17 +2137,21 @@
             try {
                 const content = editor ? editor.getValue() : document.getElementById('htmlEditor').value;
                 const filenameBase = document.getElementById('filenameBase').value || 'index';
-                const filename = `${filenameBase}.html`;
 
                 if (!content.trim()) {
                     showToast('Please enter some HTML content first!', true);
                     return;
                 }
 
+                // Generate unique filename for sharing
+                const filename = await generateUniqueFilename(`${filenameBase}`);
+
                 if (navigator.share) {
-                    // Create a blob and file for sharing
-                    const blob = new Blob([content], { type: 'text/html' });
-                    const file = new File([blob], filename, { type: 'text/html' });
+                    // Create a blob and file for sharing with proper MIME type
+                    const fileFormat = localStorage.getItem('fileFormat') || 'html';
+                    const mimeType = getMimeType(fileFormat);
+                    const blob = new Blob([content], { type: mimeType });
+                    const file = new File([blob], filename, { type: mimeType });
 
                     await navigator.share({
                         title: 'HTML File',
@@ -1841,6 +2194,149 @@
             const downloadOptions = document.getElementById('downloadOptions');
             if (downloadOptions) {
                 downloadOptions.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                });
+            }
+            
+            // Load settings on page load
+            loadSettings();
+        });
+
+        // Settings Management Functions
+        
+        // Get MIME type based on file format
+        function getMimeType(fileFormat) {
+            const mimeTypes = {
+                'html': 'text/html',
+                'css': 'text/css',
+                'js': 'text/javascript',
+                'txt': 'text/plain',
+                'json': 'application/json',
+                'xml': 'application/xml',
+                'php': 'text/php',
+                'py': 'text/x-python',
+                'java': 'text/x-java-source',
+                'cpp': 'text/x-c++src',
+                'c': 'text/x-csrc',
+                'md': 'text/markdown'
+            };
+            return mimeTypes[fileFormat] || 'text/plain';
+        }
+
+        // Show settings panel
+        function showSettings() {
+            try {
+                const settingsPanel = document.getElementById('settingsPanel');
+                settingsPanel.classList.add('show');
+                
+                // Load current settings into the form
+                const defaultFilename = localStorage.getItem('defaultFilename') || 'index';
+                const fileFormat = localStorage.getItem('fileFormat') || 'html';
+                
+                document.getElementById('defaultFilename').value = defaultFilename;
+                document.getElementById('fileFormat').value = fileFormat;
+            } catch (error) {
+                console.error('Error showing settings:', error);
+            }
+        }
+
+        // Hide settings panel
+        function hideSettings() {
+            try {
+                const settingsPanel = document.getElementById('settingsPanel');
+                settingsPanel.classList.remove('show');
+            } catch (error) {
+                console.error('Error hiding settings:', error);
+            }
+        }
+
+        // Save settings
+        function saveSettings() {
+            try {
+                const defaultFilename = document.getElementById('defaultFilename').value.trim() || 'index';
+                const fileFormat = document.getElementById('fileFormat').value;
+                
+                // Save to localStorage
+                localStorage.setItem('defaultFilename', defaultFilename);
+                localStorage.setItem('fileFormat', fileFormat);
+                
+                // Update the main filename input if it's still the old default
+                const currentFilename = document.getElementById('filenameBase').value;
+                const oldDefault = localStorage.getItem('filenameBase') || 'index';
+                
+                if (currentFilename === oldDefault || currentFilename === 'index') {
+                    document.getElementById('filenameBase').value = defaultFilename;
+                    localStorage.setItem('filenameBase', defaultFilename);
+                }
+                
+                hideSettings();
+                showToast(`Settings saved! Default filename: "${defaultFilename}", Format: .${fileFormat}`);
+            } catch (error) {
+                console.error('Error saving settings:', error);
+                showToast('Error saving settings. Please try again.', true);
+            }
+        }
+
+        // Reset settings to default
+        function resetSettings() {
+            try {
+                localStorage.removeItem('defaultFilename');
+                localStorage.removeItem('fileFormat');
+                
+                // Reset form values
+                document.getElementById('defaultFilename').value = 'index';
+                document.getElementById('fileFormat').value = 'html';
+                
+                // Reset main filename input
+                document.getElementById('filenameBase').value = 'index';
+                localStorage.setItem('filenameBase', 'index');
+                
+                showToast('Settings reset to default values!');
+            } catch (error) {
+                console.error('Error resetting settings:', error);
+                showToast('Error resetting settings. Please try again.', true);
+            }
+        }
+
+        // Load settings on page load
+        function loadSettings() {
+            try {
+                const defaultFilename = localStorage.getItem('defaultFilename') || 'index';
+                const fileFormat = localStorage.getItem('fileFormat') || 'html';
+                
+                // Set default values in settings panel
+                document.getElementById('defaultFilename').value = defaultFilename;
+                document.getElementById('fileFormat').value = fileFormat;
+                
+                // Update main filename input if it's still default
+                const currentFilename = document.getElementById('filenameBase').value;
+                if (currentFilename === 'index' && defaultFilename !== 'index') {
+                    document.getElementById('filenameBase').value = defaultFilename;
+                }
+            } catch (error) {
+                console.error('Error loading settings:', error);
+            }
+        }
+
+        // Close settings when clicking outside
+        document.addEventListener('click', function(e) {
+            const settingsPanel = document.getElementById('settingsPanel');
+            if (!settingsPanel) return;
+            
+            const isClickInside = settingsPanel.contains(e.target) || 
+                                 e.target.classList.contains('fab') ||
+                                 e.target.closest('.fab');
+
+            if (!isClickInside && settingsPanel.classList.contains('show')) {
+                hideSettings();
+            }
+        });
+
+        // Prevent closing when clicking inside settings panel
+        document.addEventListener('DOMContentLoaded', function() {
+            const settingsPanel = document.getElementById('settingsPanel');
+            if (settingsPanel) {
+                settingsPanel.addEventListener('click', function(e) {
                     e.stopPropagation();
                 });
             }
